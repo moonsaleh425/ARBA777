@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Game</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            min-height: 100vh; /* بدل height */
+            overflow: auto; /* السماح بالتمرير */
+        }
+
+        h1 {
+            font-family: 'Brush Script MT', cursive;
+            color: darkred;
+            font-size: 4rem;
+            margin-bottom: 40px;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.5); /* خلفية شفافة */
+            border: 2px solid white;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            text-align: left;
+            line-height: 1.8;
+            color: #ffffff;
+        }
+
+        .instructions strong {
+            color: orange; /* لون النصوص المهمة */
+        }
+
+        .number-display {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .start-button {
+            padding: 10px 20px;
+            background-color: orange;
+            border: none;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: red;
+            visibility: hidden;
+        }
+
+        .current-players {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-top: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px;
+            border: 2px solid #ffffff;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .bed-numbers-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid white;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        .bed-number {
+            font-size: 1.5rem;
+            color: white;
+            margin: 5px 0;
+        }
+
+        /* إضافات الرسالة */
+        .explosion-message {
+            font-size: 2rem;
+            color: yellow;
+            font-weight: bold;
+            visibility: hidden;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- التعليمات -->
+    <div class="promo-message promo-message-ar">
+        <p>ARBA7تأكد من انشاء حسابك عن طريق البروموكود <span></span></p>
+        <p> مباشرتا وابدأ اللعبة xbetثم اذهب الي تطبيق <span>1start </span>اضغط.علي</p>
+    </div>
+    <!-- عنوان اللعبة -->
+    <h1>Aviator</h1>
+    
+    <!-- Random Number Display -->
+    <div class="number-display" id="numberDisplay">0.00</div>
+    
+    <!-- Start Button -->
+    <button class="start-button" id="startButton">Start</button>
+    
+    <!-- رسالة الانفجار -->
+    <div class="explosion-message" id="explosionMessage">ستفجر الطائرة هنا!</div>
+    
+    <!-- صندوق الأرقام -->
+    <div class="current-players">الحسابات التي تلعب الآن</div>
+    <div class="bed-numbers-container" id="bedNumbersContainer">
+        <div class="bed-number" id="bed1">ID: 389091768</div>
+        <div class="bed-number" id="bed2">ID: 493820382</div>
+        <div class="bed-number" id="bed3">ID: 238492874</div>
+        <div class="bed-number" id="bed4">ID: 238748391</div>
+      <div class="bed-number" id="bed5">ID: 748392847</div>
+        <div class="bed-number" id="bed6">ID: 120938472</div>
+        <div class="bed-number" id="bed7">ID: 938472039</div>
+        <div class="bed-number" id="bed8">ID: 384920384</div>
+        <div class="bed-number" id="bed9">ID: 203847204</div>
+        <div class="bed-number" id="bed10">ID: 493820574</div>
+    </div>
+    
+    <script>
+        const numberDisplay = document.getElementById('numberDisplay');
+        const startButton = document.getElementById('startButton');
+        const explosionMessage = document.getElementById('explosionMessage');
+        const bedNumbers = [
+            "389091768", "493820382", "238492874", "238748391", 
+            "748392847", "120938472", "938472039", "384920384", 
+            "203847204", "493820574"
+        ];
+
+        function getRandomNumberWithProbability() {
+            return (Math.random() < 0.7) 
+                ? (Math.random() * 5).toFixed(2) 
+                : (Math.random() * (20 - 5) + 5).toFixed(2);
+        }
+
+        function shuffleBedNumbers() {
+            for (let i = bedNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [bedNumbers[i], bedNumbers[j]] = [bedNumbers[j], bedNumbers[i]];
+            }
+        }
+
+        function changeBedNumberColors() {
+            bedNumbers.forEach((bedNumber, index) => {
+                const bedElement = document.getElementById('bed' + (index + 1));
+                const color = Math.random() < 0.5 ? 'red' : 'green';
+                bedElement.style.color = color;
+                bedElement.textContent = 'ID: ' + bedNumbers[index];
+            });
+        }
+
+        startButton.addEventListener('click', () => {
+            let counter = 0;
+            const interval = setInterval(() => {
+                numberDisplay.textContent = getRandomNumberWithProbability();
+                counter += 100;
+                if (counter >= 2000) {
+                    clearInterval(interval);
+                    const finalValue = getRandomNumberWithProbability();
+                    numberDisplay.textContent = finalValue;
+                    
+                    // ظهور الرسالة لمدة 3 ثوانٍ
+                    explosionMessage.style.visibility = 'visible';
+                    setTimeout(() => {
+                        explosionMessage.style.visibility = 'hidden';
+                    }, 3000); // إخفاء الرسالة بعد 3 ثوانٍ
+                }
+            }, 100);
+
+            setInterval(() => {
+                shuffleBedNumbers();
+                changeBedNumberColors();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
